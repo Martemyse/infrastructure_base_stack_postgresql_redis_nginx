@@ -1,0 +1,81 @@
+services:
+  postgres:
+    build:
+      context: ./postgres
+    container_name: postgres_c
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/postgres-data:/var/lib/postgresql/data
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/functions:/docker-entrypoint-initdb.d/functions:ro
+    restart: always
+    networks:
+      - postgres_network
+
+
+  redis:
+    build:
+      context: ./redis
+    container_name: redis_c
+    volumes:
+      - ./redis/data:/data
+    restart: always
+    networks:
+      - postgres_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_c
+    ports:
+      - "80:80"
+      # - "443:443"  # Uncomment if using SSL
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      # - ./nginx/nginx_ssl.conf:/etc/nginx/nginx.conf  # Use this if using SSL
+      # - ./nginx/ssl:/etc/nginx/ssl  # Place server.crt and server.key here when using SSL config
+      - ./volumes/static/django_c:/app/static/django_c
+      - ./volumes/static/dashapp_urnioutput:/app/static/dashapp_urnioutput
+    networks:
+      - postgres_network
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer_c
+    ports:
+      - "9000:9000"
+      - "8001:8001"  # Optional for Portainer Agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - postgres_network
+
+networks:
+  postgres_network:
+    external: true
+    name: postgres_network
+    driver: bridge
+
+volumes:
+  portainer_data:

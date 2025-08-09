@@ -1,0 +1,31 @@
+# Environment
+.env
+
+# Python caches (if any app code is added later)
+__pycache__/
+*.py[cod]
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Docker volumes/data
+postgres/postgres-data/**
+!postgres/postgres-data/.gitkeep
+redis/data/**
+!redis/data/.gitkeep
+
+# Static volumes (keep placeholder, ignore contents)
+volumes/static/**
+!volumes/static/django_c/.gitkeep
+!volumes/static/dashapp_urnioutput/.gitkeep
+
+# Logs
+*.log
+
+# Node (if any UI later)
+node_modules/
