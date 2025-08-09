@@ -1,6 +1,6 @@
 # Infrastructure: PostgreSQL + Redis + Nginx (reverse proxy) + Portainer + RabbitMQ
 
-Production-ready Docker Compose setup to run a PostgreSQL instance (with pg_cron), a Redis instance with a custom config, an Nginx reverse proxy that fronts your app containers, Portainer for Docker management, and RabbitMQ with the management UI.
+Production-ready Docker Compose setup to run a PostgreSQL instance (with pg_cron, pg_vector), a Redis instance with a custom config, an Nginx reverse proxy that fronts your app containers, Portainer for Docker management, and RabbitMQ with the management UI.
 
 This repository is designed to be portable across OSes and easy to showcase on GitHub/Upwork. It avoids OS-specific paths and keeps secrets out of version control.
 
